@@ -6,7 +6,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => { loadHabits(); }, []);
+  useEffect(() => {
+    loadHabits();
+  }, []);
 
   const loadHabits = async () => {
     try {
@@ -15,7 +17,9 @@ export default function Dashboard() {
       const data = await getTodayHabits();
       setHabits(data);
     } catch (err) {
-      setError("Failed to load habits. Make sure the backend is running on http://localhost:5000");
+      setError(
+        "Failed to load habits. Make sure the backend is running on http://localhost:5000",
+      );
       console.error(err);
     } finally {
       setLoading(false);
@@ -32,19 +36,28 @@ export default function Dashboard() {
     }
   };
 
-  const completed = habits.filter(h => h.completed_today).length;
-  const progress = habits.length ? Math.round((completed / habits.length) * 100) : 0;
-  const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+  const completed = habits.filter((h) => h.completed_today).length;
+  const progress = habits.length
+    ? Math.round((completed / habits.length) * 100)
+    : 0;
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
 
-  if (error) return (
-    <div className="page">
-      <div className="error-container">
-        <h2>❌ Error</h2>
-        <p>{error}</p>
-        <button className="retry-btn" onClick={loadHabits}>🔄 Retry</button>
+  if (error)
+    return (
+      <div className="page">
+        <div className="error-container">
+          <h2>❌ Error</h2>
+          <p>{error}</p>
+          <button className="retry-btn" onClick={loadHabits}>
+            🔄 Retry
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    );
 
   if (loading) return <div className="loading">⏳ Loading your habits...</div>;
 
@@ -57,7 +70,9 @@ export default function Dashboard() {
 
       <div className="progress-card">
         <div className="progress-info">
-          <span>{completed} / {habits.length} habits done</span>
+          <span>
+            {completed} / {habits.length} habits done
+          </span>
           <span>{progress}%</span>
         </div>
         <div className="progress-bar">
@@ -67,15 +82,27 @@ export default function Dashboard() {
 
       <div className="habits-list">
         {habits.length === 0 && (
-          <div className="empty">No habits yet! Click ➕ Add Habit to start.</div>
+          <div className="empty">
+            No habits yet! Click ➕ Add Habit to start.
+          </div>
         )}
-        {habits.map(habit => (
-          <div key={habit.id} className={`habit-card ${habit.completed_today ? "completed" : ""}`}
-            style={{ borderLeft: `4px solid ${habit.color}` }}>
+        {habits.map((habit) => (
+          <div
+            key={habit.id}
+            className={`habit-card ${habit.completed_today ? "completed" : ""}`}
+            style={{ borderLeft: `4px solid ${habit.color}` }}
+          >
             <div className="habit-left">
-              <button className="check-btn"
-                style={{ background: habit.completed_today ? habit.color : "transparent", borderColor: habit.color }}
-                onClick={() => handleToggle(habit.id)}>
+              <button
+                className="check-btn"
+                style={{
+                  background: habit.completed_today
+                    ? habit.color
+                    : "transparent",
+                  borderColor: habit.color,
+                }}
+                onClick={() => handleToggle(habit.id)}
+              >
                 {habit.completed_today ? "✓" : ""}
               </button>
               <span className="habit-icon">{habit.icon}</span>

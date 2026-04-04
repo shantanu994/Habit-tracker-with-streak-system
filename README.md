@@ -1,2 +1,346 @@
-# Habit-tracker-and-streak-system
-A clean, user-friendly habit tracker that helps you build consistency through daily logging, streak tracking, and visual progress insights.
+# HabitFlow - Habit Tracker with Streak System
+
+A modern, user-friendly habit tracking application designed to help you build consistency and maintain streaks. Track your daily habits, visualize your progress with analytics, and celebrate your achievements with streak counts.
+
+## Features
+
+- **Daily Dashboard** - View all your habits at a glance with today's completion status and current streaks
+- **Quick Toggle** - Mark habits as complete with a single click
+- **Progress Tracking** - See your daily progress percentage and completion count
+- **Analytics Dashboard** - Visualize your habit data with:
+  - Bar charts showing total completions per habit
+  - Pie charts for habit distribution
+  - 90-day heatmaps for individual habits
+  - Current streak and total completion counts
+- **Customization** - Choose custom icons and colors for each habit
+- **Streak Counter** - Track consecutive days of habit completion
+- **Responsive Design** - Modern dark theme UI that works on desktop
+- **Persistent Storage** - SQLite database for reliable data persistence
+- **Error Handling** - Graceful error messages for network issues and validation
+
+## Tech Stack
+
+### Backend
+
+- **Python 3.x** with Flask web framework
+- **SQLAlchemy** ORM for database management
+- **SQLite** for data persistence
+- **Flask-CORS** for cross-origin requests
+- RESTful API architecture
+
+### Frontend
+
+- **React 19** - Modern UI library
+- **Axios** - HTTP client for API calls
+- **Recharts** - Data visualization library
+- **CSS3** - Custom styling with CSS variables and grid/flexbox
+- Modern ES6+ JavaScript
+
+## Project Structure
+
+```
+Habit-tracker-with-streak-system/
+├── Backend/
+│   ├── app.py              # Flask application & API routes
+│   ├── models.py           # SQLAlchemy database models
+│   ├── requirements.txt    # Python dependencies
+│   ├── habits.db           # SQLite database (auto-generated)
+│   └── instance/           # Flask instance folder
+├── frontend/
+│   ├── public/
+│   │   ├── index.html      # HTML entry point
+│   │   └── manifest.json   # PWA manifest
+│   ├── src/
+│   │   ├── App.js          # Main app component with routing
+│   │   ├── index.js        # React entry point
+│   │   ├── index.css       # Global styles
+│   │   ├── main.jsx        # Main layout component
+│   │   ├── api/
+│   │   │   └── habits.js   # API client with Axios
+│   │   └── pages/
+│   │       ├── Dashboard.jsx    # Today's habits view
+│   │       ├── AddHabit.jsx     # Add/manage habits
+│   │       └── Analytics.jsx    # Analytics & charts
+│   ├── package.json        # Node dependencies
+│   └── README.md
+├── LICENSE
+└── README.md (this file)
+```
+
+## Getting Started
+
+### Prerequisites
+
+- **Python 3.8+** - For the backend
+- **Node.js 16+** - For the frontend
+- **npm or yarn** - Package manager
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/yourusername/Habit-tracker-with-streak-system.git
+   cd Habit-tracker-with-streak-system
+   ```
+
+2. **Setup Backend**
+
+   ```bash
+   cd Backend
+
+   # Create a virtual environment
+   python -m venv venv
+
+   # Activate virtual environment
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+
+   # Install dependencies
+   pip install -r requirements.txt
+   ```
+
+3. **Setup Frontend**
+
+   ```bash
+   cd ../frontend
+
+   # Install dependencies
+   npm install
+   ```
+
+## Running the Application
+
+### Start the Backend Server
+
+```bash
+cd Backend
+
+# Activate virtual environment (if not already activated)
+# Windows: venv\Scripts\activate
+# macOS/Linux: source venv/bin/activate
+
+# Run the Flask app
+python app.py
+```
+
+The backend will start on `http://localhost:5000`
+
+You'll see output like:
+
+```
+==================================================
+HabitFlow Backend Starting...
+Backend running on: http://localhost:5000
+CORS enabled for frontend
+==================================================
+```
+
+### Start the Frontend Application
+
+In a new terminal:
+
+```bash
+cd frontend
+
+# Start the React development server
+npm start
+```
+
+The frontend will open at `http://localhost:3000`
+
+## Usage
+
+### Dashboard (Today's View)
+
+- **View today's habits** - See all your habits with completion status
+- **Mark habits complete** - Click the checkbox to toggle completion
+- **Track progress** - View your daily completion percentage
+- **Monitor streaks** - See your current streak for each habit
+
+### Add Habit
+
+- **Create new habits** - Enter a name, choose an icon and color
+- **Customize appearance** - Pick from 10 icons and 8 colors
+- **View all habits** - See and manage all your created habits
+- **Delete habits** - Remove habits you no longer want to track
+
+### Analytics
+
+- **View statistics** - Total completions and current streaks for all habits
+- **Completion chart** - Bar chart showing completions per habit
+- **Habit distribution** - Pie chart showing habit proportions
+- **90-Day heatmap** - Visualization of completion patterns over time
+- **Habit details** - Click on habit cards to view their heatmap
+
+## API Endpoints
+
+### GET `/api/today`
+
+Retrieve all habits with today's completion status and streaks
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Drink Water",
+    "icon": "water",
+    "color": "#3b82f6",
+    "completed_today": true,
+    "streak": 15
+  }
+]
+```
+
+### POST `/api/habits`
+
+Create a new habit
+
+```json
+{
+  "name": "Morning Exercise",
+  "icon": "exercise",
+  "color": "#ef4444"
+}
+```
+
+### DELETE `/api/habits/<id>`
+
+Delete a habit by ID
+
+### POST `/api/habits/<id>/complete`
+
+Toggle habit completion for today
+
+### GET `/api/analytics`
+
+Get analytics data for all habits
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Drink Water",
+    "total_completions": 45,
+    "current_streak": 15
+  }
+]
+```
+
+### GET `/api/habits/<id>/heatmap`
+
+Get completion history for a specific habit (90 days)
+
+## Configuration
+
+### Backend Configuration
+
+Edit `Backend/app.py` to change:
+
+- Database location: `app.config['SQLALCHEMY_DATABASE_URI']`
+- Server port: `app.run(port=5000)`
+- Debug mode: `app.run(debug=True)`
+
+### Frontend Configuration
+
+API base URL is configured in `frontend/src/api/habits.js`:
+
+```javascript
+const BASE = "http://localhost:5000/api";
+```
+
+Change this if you're running the backend on a different URL.
+
+## Database Schema
+
+### Habit Table
+
+- `id` - Primary key
+- `name` - Habit name (required)
+- `icon` - Icon identifier (default: star)
+- `color` - Hex color code (default: #6366f1)
+- `created_at` - Creation date
+
+### HabitLog Table
+
+- `id` - Primary key
+- `habit_id` - Foreign key to Habit
+- `date` - Log date
+- `completed` - Boolean completion status
+
+## UI Customization
+
+The application uses CSS variables for easy theming. Edit `frontend/src/index.css`:
+
+```css
+:root {
+  --bg: #0f0f17;
+  --surface: #1a1a2e;
+  --border: #2a2a4a;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --accent: #6366f1;
+}
+```
+
+## Error Handling
+
+The application includes comprehensive error handling:
+
+- **Network errors** - Shows helpful messages if backend is unreachable
+- **Validation errors** - Prevents empty habit names
+- **API errors** - Clear error messages from backend
+- **Retry functionality** - Users can retry failed requests
+
+## Recent Improvements
+
+- Added comprehensive error handling and validation
+- Improved user feedback with success/error messages
+- Added loading states for better UX
+- Enhanced error recovery with retry functionality
+- Better error messages for network issues
+- Input validation on backend
+- Axios interceptors for error handling
+- Startup logging for debugging
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Troubleshooting
+
+### Backend won't start
+
+- Ensure Python 3.8+ is installed
+- Check that port 5000 is not in use: `lsof -i :5000` (macOS/Linux)
+- Delete `habits.db` to reset the database
+
+### Frontend can't connect to backend
+
+- Verify backend is running on `http://localhost:5000`
+- Check CORS is enabled (should see message on backend startup)
+- Clear browser cache and reload
+
+### No habits showing
+
+- Check backend logs for errors
+- Ensure database file `Backend/habits.db` exists
+- Try creating a new habit
+
+## Support
+
+For support, open an issue on GitHub or contact the maintainers.
+
+---
