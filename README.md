@@ -272,18 +272,23 @@ Change this if you're running the backend on a different URL.
 
 ## UI Customization
 
-The application uses CSS variables for easy theming. Edit `frontend/src/index.css`:
+The application uses CSS variables and glassmorphism effects for a modern, sleek design. Edit `frontend/src/index.css` to customize:
 
 ```css
 :root {
-  --bg: #0f0f17;
-  --surface: #1a1a2e;
-  --border: #2a2a4a;
-  --text: #e2e8f0;
-  --muted: #64748b;
-  --accent: #6366f1;
+  --accent: #6366f1; /* Primary accent color (indigo) */
+  --pink: #ec4899; /* Pink accent */
+  --amber: #f59e0b; /* Amber accent */
+  --green: #10b981; /* Green accent */
+  --text: #f1f5f9; /* Text color */
+  --muted: rgba(255, 255, 255, 0.4); /* Muted text */
+  --glass: rgba(255, 255, 255, 0.06); /* Glass effect background */
+  --glass-border: rgba(255, 255, 255, 0.12); /* Glass effect border */
+  --glass-hover: rgba(255, 255, 255, 0.1); /* Glass effect on hover */
 }
 ```
+
+Features include animated background blobs, smooth transitions, hover effects, and a modern fixed bottom navigation bar.
 
 ## Error Handling
 
@@ -304,6 +309,14 @@ The application includes comprehensive error handling:
 - Input validation on backend
 - Axios interceptors for error handling
 - Startup logging for debugging
+- **Enhanced CSS Styling** - Updated `index.css` with:
+  - Glassmorphism UI effects with backdrop filters
+  - Animated background blobs for visual appeal
+  - Improved color palette with accent colors (indigo, pink, amber, green)
+  - Better spacing and layout with modern flexbox/grid
+  - Smooth transitions and animations throughout the UI
+  - Fixed bottom navbar with floating design
+  - Enhanced visual hierarchy and readability
 
 ## License
 
