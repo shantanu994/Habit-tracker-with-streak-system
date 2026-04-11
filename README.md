@@ -8,13 +8,19 @@ A modern, user-friendly habit tracking application designed to help you build co
 - **Quick Toggle** - Mark habits as complete with a single click
 - **Progress Tracking** - See your daily progress percentage and completion count
 - **Analytics Dashboard** - Visualize your habit data with:
+  - GitHub-style contribution heatmap showing daily completions over the past year
   - Bar charts showing total completions per habit
   - Pie charts for habit distribution
-  - 90-day heatmaps for individual habits
   - Current streak and total completion counts
+- **Contribution Heatmap** - Beautiful year-long heatmap with:
+  - 7-day rows × 52-week columns layout
+  - Color intensity based on daily habit completions
+  - Hover tooltips showing date and completion count
+  - Month labels for easy navigation
+  - Fully responsive on mobile, tablet, and desktop
 - **Customization** - Choose custom icons and colors for each habit
 - **Streak Counter** - Track consecutive days of habit completion
-- **Responsive Design** - Modern dark theme UI that works on desktop
+- **Responsive Design** - Modern dark theme UI that works on desktop and mobile
 - **Persistent Storage** - SQLite database for reliable data persistence
 - **Error Handling** - Graceful error messages for network issues and validation
 
@@ -57,6 +63,9 @@ Habit-tracker-with-streak-system/
 │   │   ├── main.jsx        # Main layout component
 │   │   ├── api/
 │   │   │   └── habits.js   # API client with Axios
+│   │   ├── components/
+│   │   │   ├── ContributionHeatmap.jsx  # GitHub-style heatmap component
+│   │   │   └── ContributionHeatmap.css  # Heatmap styling
 │   │   └── pages/
 │   │       ├── Dashboard.jsx    # Today's habits view
 │   │       ├── AddHabit.jsx     # Add/manage habits
@@ -233,6 +242,21 @@ Get analytics data for all habits
 
 Get completion history for a specific habit (90 days)
 
+### GET `/api/heatmap/year`
+
+Get daily habit completion counts for the past year (used for contribution heatmap)
+
+**Response:**
+```json
+[
+  {"date": "2024-04-11", "count": 3},
+  {"date": "2024-04-12", "count": 1},
+  {"date": "2024-04-13", "count": 0}
+]
+```
+
+Returns 365 days of data with daily aggregated completions across all habits.
+
 ## Configuration
 
 ### Backend Configuration
@@ -301,6 +325,15 @@ The application includes comprehensive error handling:
 
 ## Recent Improvements
 
+- **GitHub-Style Contribution Heatmap** ✨ New!
+  - Year-long visualization of daily habit completions
+  - 7-row × 52-column grid layout (days × weeks)
+  - 5-level color intensity system (gray to vibrant green)
+  - Hover tooltips with date and completion count
+  - Month labels for easy navigation
+  - Fully responsive design (desktop, tablet, mobile)
+  - No external visualization libraries needed
+  - Automatic data aggregation from all habits
 - Added comprehensive error handling and validation
 - Improved user feedback with success/error messages
 - Added loading states for better UX
@@ -317,6 +350,38 @@ The application includes comprehensive error handling:
   - Smooth transitions and animations throughout the UI
   - Fixed bottom navbar with floating design
   - Enhanced visual hierarchy and readability
+
+## Contribution Heatmap Guide
+
+The Analytics page now includes a **GitHub-style contribution heatmap** that visualizes your habit completion patterns over the past year.
+
+### How It Works
+
+- **7 Rows** = Days of the week (Monday through Sunday)
+- **52+ Columns** = Weeks of the past year
+- **Each Cell** = One day of data
+- **Color Intensity** = Number of habits completed that day
+
+### Color System
+
+```
+░ Empty (Gray)       = 0 habits completed
+░ Light Green        = 1 habit completed
+▓ Medium Green       = 2 habits completed  
+▓ Dark Green         = 3 habits completed
+█ Vibrant Green      = 4+ habits completed
+```
+
+### Features
+
+✅ Hover over any cell to see the exact date and completion count  
+✅ Month labels automatically aligned across the top  
+✅ Refresh button to reload data  
+✅ Fully responsive - adapts to mobile, tablet, and desktop screens  
+✅ Fast performance - aggregates data efficiently  
+✅ No external charting library required  
+
+The contribution heatmap appears at the top of the Analytics page and provides a quick visual overview of your entire year of habit tracking and consistency patterns.
 
 ## License
 
