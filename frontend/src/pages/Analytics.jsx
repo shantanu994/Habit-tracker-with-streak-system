@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAnalytics, getHeatmap } from "../api/habits";
+import { getAnalytics } from "../api/habits";
+import ContributionHeatmap from "../components/ContributionHeatmap";
 import {
   BarChart,
   Bar,
@@ -13,26 +14,8 @@ import {
   Legend,
 } from "recharts";
 
-function buildHeatmap(logs) {
-  const map = {};
-  logs.forEach((l) => {
-    map[l.date] = 1;
-  });
-  const grid = [];
-  const today = new Date();
-  for (let i = 89; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const key = d.toISOString().split("T")[0];
-    grid.push({ date: key, count: map[key] || 0 });
-  }
-  return grid;
-}
-
 export default function Analytics() {
   const [analytics, setAnalytics] = useState([]);
-  const [selected, setSelected] = useState(null);
-  const [heatmap, setHeatmap] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -46,27 +29,11 @@ export default function Analytics() {
       setLoading(true);
       const data = await getAnalytics();
       setAnalytics(data);
-      if (data.length > 0) {
-        setSelected(data[0]);
-        const logs = await getHeatmap(data[0].id);
-        setHeatmap(buildHeatmap(logs));
-      }
     } catch (err) {
       setError("Failed to load analytics. Please try again.");
       console.error(err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleSelect = async (habit) => {
-    try {
-      setSelected(habit);
-      const logs = await getHeatmap(habit.id);
-      setHeatmap(buildHeatmap(logs));
-    } catch (err) {
-      setError("Failed to load habit details.");
-      console.error(err);
     }
   };
 
@@ -115,6 +82,9 @@ export default function Analytics() {
         <h1>📊 Analytics</h1>
         <p>Your habit performance</p>
       </div>
+
+      {/* Contribution Heatmap */}
+      <ContributionHeatmap />
 
       <div className="stat-cards">
         {analytics.map((h) => (
@@ -170,38 +140,6 @@ export default function Analytics() {
             <Tooltip />
           </PieChart>
         </ResponsiveContainer>
-      </div>
-
-      <div className="chart-card">
-        <h3>Consistency Heatmap (Last 90 Days)</h3>
-        <div className="heatmap-selector">
-          {analytics.map((h) => (
-            <button
-              key={h.id}
-              className={`heatmap-btn ${selected?.id === h.id ? "active" : ""}`}
-              style={{
-                borderColor: h.color,
-                background: selected?.id === h.id ? h.color : "transparent",
-              }}
-              onClick={() => handleSelect(h)}
-            >
-              {h.icon} {h.name}
-            </button>
-          ))}
-        </div>
-        <div className="heatmap-grid">
-          {heatmap.map((cell, i) => (
-            <div
-              key={i}
-              className="heatmap-cell"
-              title={cell.date}
-              style={{
-                background: cell.count ? selected?.color : "#1e1e2e",
-                opacity: cell.count ? 1 : 0.3,
-              }}
-            />
-          ))}
-        </div>
       </div>
     </div>
   );

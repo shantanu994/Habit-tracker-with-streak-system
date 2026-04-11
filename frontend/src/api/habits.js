@@ -40,3 +40,5 @@ export const getAnalytics = () =>
   apiClient.get(`/analytics`).then((r) => r.data);
 export const getHeatmap = (id) =>
   apiClient.get(`/habits/${id}/heatmap`).then((r) => r.data);
+export const getYearHeatmap = () =>
+  apiClient.get(`/heatmap/year`).then((r) => r.data);

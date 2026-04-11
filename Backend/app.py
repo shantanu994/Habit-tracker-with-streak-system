@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from sqlalchemy import and_
 from models import db, Habit, HabitLog
 from datetime import date, timedelta
 
@@ -107,6 +108,37 @@ def get_analytics():
 def get_heatmap(habit_id):
     logs = HabitLog.query.filter_by(habit_id=habit_id, completed=True).all()
     return jsonify([{"date": str(log.date), "count": 1} for log in logs])
+
+
+# ── GET aggregated heatmap for all habits (past year) ─
+@app.route("/api/heatmap/year", methods=["GET"])
+def get_year_heatmap():
+    """Returns daily completion counts for all habits in the past year"""
+    today = date.today()
+    year_ago = today - timedelta(days=365)
+
+    # Get all completed logs in the past year
+    logs = HabitLog.query.filter(
+        HabitLog.completed == True,
+        HabitLog.date >= year_ago,
+        HabitLog.date <= today
+    ).all()
+
+    # Aggregate by date
+    daily_counts = {}
+    for log in logs:
+        date_str = str(log.date)
+        daily_counts[date_str] = daily_counts.get(date_str, 0) + 1
+
+    # Build result for all days in the past year
+    result = []
+    current_date = year_ago
+    while current_date <= today:
+        date_str = str(current_date)
+        result.append({"date": date_str, "count": daily_counts.get(date_str, 0)})
+        current_date += timedelta(days=1)
+
+    return jsonify(result)
 
 
 # ── HELPER: calculate streak ─────────────────────────
