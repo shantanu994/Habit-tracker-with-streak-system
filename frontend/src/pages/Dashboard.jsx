@@ -53,6 +53,8 @@ export default function Dashboard() {
   };
 
   const completed = habits.filter(h => h.completed_today).length;
+  const totalStreak = habits.reduce((sum, h) => sum + h.streak, 0);
+  const bestStreak = habits.reduce((max, h) => Math.max(max, h.streak), 0);
   const progress = habits.length ? Math.round((completed / habits.length) * 100) : 0;
   const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
   const allDone = habits.length > 0 && completed === habits.length;
@@ -66,6 +68,24 @@ export default function Dashboard() {
         <p>{today}</p>
       </div>
 
+      <div className="stat-row">
+        <div className="stat-card premium-stat-card">
+          <div className="s-icon">✅</div>
+          <div className="s-val">{completed}</div>
+          <div className="s-label">Done Today</div>
+        </div>
+        <div className="stat-card premium-stat-card">
+          <div className="s-icon">🧩</div>
+          <div className="s-val">{Math.max(habits.length - completed, 0)}</div>
+          <div className="s-label">Remaining</div>
+        </div>
+        <div className="stat-card premium-stat-card">
+          <div className="s-icon">🔥</div>
+          <div className="s-val">{bestStreak}</div>
+          <div className="s-label">Best Streak</div>
+        </div>
+      </div>
+
       {/* Motivational Quote */}
       <div className={`quote-card ${allDone ? "quote-celebration" : ""}`}>
         <span>💬</span> {quote}
@@ -75,10 +95,14 @@ export default function Dashboard() {
       <div className="progress-card">
         <div className="progress-info">
           <span>{completed} / {habits.length} habits done</span>
-          <span>{progress}%</span>
+          <span className="pct">{progress}%</span>
         </div>
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${progress}%` }} />
+        </div>
+        <div className="progress-meta">
+          <span>{allDone ? "Momentum locked in" : "Stay consistent and stack wins"}</span>
+          <span>Total streak days: {totalStreak}</span>
         </div>
       </div>
 

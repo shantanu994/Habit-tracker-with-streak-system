@@ -3,14 +3,14 @@
 .heatmap-container {
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.05),
-    rgba(255, 255, 255, 0.02)
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.03)
   );
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  padding: 16px;
+  border: 1px solid rgba(198, 222, 255, 0.24);
+  border-radius: 18px;
+  padding: 18px;
   margin: 12px 0;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(16px);
   animation: slideUp 0.4s ease-out;
   width: 100%;
 }
@@ -47,8 +47,8 @@
 
 .heatmap-header h2 {
   font-size: 18px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #6366f1, #ec4899);
+  font-weight: 800;
+  background: linear-gradient(135deg, #4f7cff, #24c2ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -63,10 +63,10 @@
 .refresh-btn {
   background: linear-gradient(
     135deg,
-    rgba(99, 102, 241, 0.2),
-    rgba(236, 72, 153, 0.2)
+    rgba(79, 124, 255, 0.22),
+    rgba(36, 194, 255, 0.18)
   );
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  border: 1px solid rgba(191, 215, 255, 0.3);
   color: var(--text);
   padding: 6px 12px;
   border-radius: 6px;
@@ -79,10 +79,10 @@
 .refresh-btn:hover {
   background: linear-gradient(
     135deg,
-    rgba(99, 102, 241, 0.3),
-    rgba(236, 72, 153, 0.3)
+    rgba(79, 124, 255, 0.34),
+    rgba(36, 194, 255, 0.28)
   );
-  border-color: rgba(99, 102, 241, 0.5);
+  border-color: rgba(187, 214, 255, 0.5);
   transform: scale(1.05);
 }
 
@@ -182,7 +182,7 @@
 .heatmap-cell:hover {
   transform: scale(1.25);
   border-color: var(--text);
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0 12px rgba(79, 124, 255, 0.5);
   z-index: 10;
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { addHabit, deleteHabit, getTodayHabits } from "../api/habits";
 
 const ICONS = ["💧", "📚", "🏃", "🧘", "💪", "🥗", "😴", "✍️", "🎸", "🌿"];
@@ -22,11 +22,7 @@ export default function AddHabit({ onAdd }) {
   const [msgType, setMsgType] = useState(""); // 'success' or 'error'
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    loadHabits();
-  }, []);
-
-  const loadHabits = async () => {
+  const loadHabits = useCallback(async () => {
     try {
       const data = await getTodayHabits();
       setHabits(data);
@@ -34,7 +30,11 @@ export default function AddHabit({ onAdd }) {
       console.error(err);
       showMessage("Failed to load habits", "error");
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadHabits();
+  }, [loadHabits]);
 
   const showMessage = (text, type = "success") => {
     setMsg(text);
@@ -83,6 +83,11 @@ export default function AddHabit({ onAdd }) {
       </div>
 
       <div className="form-card">
+        <div className="form-title-wrap">
+          <h3 className="form-title">Create a Signature Habit</h3>
+          <p className="form-subtitle">Pick a name, icon, and color that feels motivating.</p>
+        </div>
+
         <div className="form-group">
           <label>Habit Name</label>
           <input
@@ -122,6 +127,14 @@ export default function AddHabit({ onAdd }) {
           </div>
         </div>
 
+        <div className="habit-preview" style={{ borderColor: color }}>
+          <span className="preview-icon">{icon}</span>
+          <div>
+            <p className="preview-label">Preview</p>
+            <strong>{name.trim() || "Your new habit"}</strong>
+          </div>
+        </div>
+
         {msg && <div className={`msg msg-${msgType}`}>{msg}</div>}
         <button
           className="submit-btn"
@@ -145,7 +158,7 @@ export default function AddHabit({ onAdd }) {
             </button>
           </div>
         ))}
-        {habits.length === 0 && <p>No habits yet!</p>}
+        {habits.length === 0 && <p className="empty-hint">No habits yet. Add your first one above.</p>}
       </div>
     </div>
   );

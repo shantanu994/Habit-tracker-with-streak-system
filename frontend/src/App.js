@@ -5,6 +5,10 @@ import AddHabit from "./pages/AddHabit";
 
 export default function App() {
   const [page, setPage] = useState("dashboard");
+  const today = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <>
@@ -20,7 +24,11 @@ export default function App() {
         <div className="main-content">
           {/* Logo at top */}
           <div className="top-header">
-            <div className="logo-badge">🔥 HabitFlow</div>
+            <div className="brand-stack">
+              <div className="logo-badge">🔥 HabitFlow</div>
+              <p className="brand-tag">Daily systems, beautifully executed.</p>
+            </div>
+            <div className="header-pill">Today · {today}</div>
           </div>
 
           {/* Pages */}
@@ -32,13 +40,16 @@ export default function App() {
         {/* Bottom Navbar */}
         <nav className="navbar">
           <button className={`nav-btn ${page === "dashboard" ? "active" : ""}`} onClick={() => setPage("dashboard")}>
-            🏠 Today
+            <span>🏠</span>
+            <span>Today</span>
           </button>
           <button className={`nav-btn ${page === "analytics" ? "active" : ""}`} onClick={() => setPage("analytics")}>
-            📊 Analytics
+            <span>📊</span>
+            <span>Analytics</span>
           </button>
           <button className={`nav-btn ${page === "add" ? "active" : ""}`} onClick={() => setPage("add")}>
-            ➕ Add Habit
+            <span>➕</span>
+            <span>Add Habit</span>
           </button>
         </nav>
       </div>

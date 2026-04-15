@@ -80,23 +80,23 @@ export default function Analytics() {
     <div className="page">
       <div className="page-header">
         <h1>📊 Analytics</h1>
-        <p>Your habit performance</p>
+        <p>Performance intelligence for your daily systems</p>
       </div>
 
       {/* Contribution Heatmap */}
       <ContributionHeatmap />
 
-      <div className="stat-cards">
+      <div className="stat-cards-grid">
         {analytics.map((h) => (
           <div
             key={h.id}
-            className="stat-card"
-            style={{ borderTop: `3px solid ${h.color}` }}
+            className="analytics-stat"
+            style={{ borderLeft: `3px solid ${h.color}` }}
           >
-            <div className="stat-icon">{h.icon}</div>
-            <div className="stat-name">{h.name}</div>
-            <div className="stat-streak">🔥 {h.current_streak} day streak</div>
-            <div className="stat-total">
+            <div className="s-icon">{h.icon}</div>
+            <div className="s-name">{h.name}</div>
+            <div className="s-streak">🔥 {h.current_streak} day streak</div>
+            <div className="s-total">
               {h.total_completions} total completions
             </div>
           </div>
