@@ -1023,6 +1023,13 @@ body {
   font-weight: 600;
 }
 
+.demo-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .empty-hint {
   color: var(--muted);
 }

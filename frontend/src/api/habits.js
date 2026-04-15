@@ -46,3 +46,5 @@ export const getYearHeatmap = () =>
   apiClient.get(`/heatmap/year`).then((r) => r.data);
 export const getWeeklyTrend = () =>
   apiClient.get(`/analytics/weekly-trend`).then((r) => r.data);
+export const seedDemoData = () =>
+  apiClient.post(`/demo/seed`).then((r) => r.data);

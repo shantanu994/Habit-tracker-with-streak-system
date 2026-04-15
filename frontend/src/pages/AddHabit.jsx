@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { addHabit, deleteHabit, getTodayHabits, updateHabit } from "../api/habits";
+import {
+  addHabit,
+  deleteHabit,
+  getTodayHabits,
+  updateHabit,
+  seedDemoData,
+} from "../api/habits";
 
 const ICONS = ["💧", "📚", "🏃", "🧘", "💪", "🥗", "😴", "✍️", "🎸", "🌿"];
 const COLORS = [
@@ -88,6 +94,24 @@ export default function AddHabit({ onAdd }) {
     } catch (err) {
       console.error(err);
       showMessage("❌ Failed to delete habit.", "error");
+    }
+  };
+
+  const handleSeedDemo = async () => {
+    try {
+      setLoading(true);
+      const res = await seedDemoData();
+      if (res.created > 0) {
+        showMessage("✅ Demo data added!", "success");
+      } else {
+        showMessage("ℹ️ Demo data skipped: habits already exist.", "success");
+      }
+      await loadHabits();
+    } catch (err) {
+      console.error(err);
+      showMessage("❌ Failed to add demo data.", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -234,7 +258,16 @@ export default function AddHabit({ onAdd }) {
       </div>
 
       <div className="form-card">
-        <h3>Your Habits ({habits.length})</h3>
+        <div className="demo-actions">
+          <h3>Your Habits ({habits.length})</h3>
+          <button
+            className="secondary-btn"
+            onClick={handleSeedDemo}
+            disabled={loading}
+          >
+            🧪 Load Demo Data
+          </button>
+        </div>
         {habits.map((h) => (
           <div key={h.id} className="habit-row">
             <span className="habit-row-main">

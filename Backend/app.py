@@ -220,6 +220,87 @@ def get_weekly_trend():
     return jsonify(result)
 
 
+# ── ADD demo data for presentation ───────────────────
+@app.route("/api/demo/seed", methods=["POST"])
+def seed_demo_data():
+    try:
+        if Habit.query.count() > 0:
+            return jsonify(
+                {
+                    "message": "Demo data not added because habits already exist",
+                    "created": 0,
+                }
+            )
+
+        demo_habits = [
+            {
+                "name": "Morning Walk",
+                "icon": "🚶",
+                "color": "#10b981",
+                "weekly_target": 5,
+                "reminder_time": "06:30",
+            },
+            {
+                "name": "Read 20 Pages",
+                "icon": "📚",
+                "color": "#3b82f6",
+                "weekly_target": 6,
+                "reminder_time": "21:00",
+            },
+            {
+                "name": "Drink Water",
+                "icon": "💧",
+                "color": "#14b8a6",
+                "weekly_target": 7,
+                "reminder_time": "10:00",
+            },
+            {
+                "name": "Workout",
+                "icon": "💪",
+                "color": "#f59e0b",
+                "weekly_target": 4,
+                "reminder_time": "18:30",
+            },
+            {
+                "name": "Meditation",
+                "icon": "🧘",
+                "color": "#8b5cf6",
+                "weekly_target": 5,
+                "reminder_time": "07:00",
+            },
+        ]
+
+        weekday_patterns = [
+            {0, 1, 2, 4, 5},
+            {0, 1, 2, 3, 4, 6},
+            {0, 1, 2, 3, 4, 5, 6},
+            {1, 3, 5, 6},
+            {0, 2, 3, 5, 6},
+        ]
+
+        created_habits = []
+        for entry in demo_habits:
+            habit = Habit(**entry)
+            db.session.add(habit)
+            created_habits.append(habit)
+
+        db.session.flush()
+
+        today = date.today()
+        for idx, habit in enumerate(created_habits):
+            pattern = weekday_patterns[idx % len(weekday_patterns)]
+            for days_ago in range(0, 35):
+                log_date = today - timedelta(days=days_ago)
+                if log_date.weekday() in pattern and (days_ago + idx) % 6 != 0:
+                    db.session.add(HabitLog(habit_id=habit.id, date=log_date, completed=True))
+
+        db.session.commit()
+        return jsonify({"message": "Demo data added", "created": len(created_habits)})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
 # ── GET heatmap data for a habit ─────────────────────
 @app.route("/api/habits/<int:habit_id>/heatmap", methods=["GET"])
 def get_heatmap(habit_id):
