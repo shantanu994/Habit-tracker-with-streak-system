@@ -34,6 +34,8 @@ export const addHabit = (data) =>
   apiClient.post(`/habits`, data).then((r) => r.data);
 export const deleteHabit = (id) =>
   apiClient.delete(`/habits/${id}`).then((r) => r.data);
+export const updateHabit = (id, data) =>
+  apiClient.put(`/habits/${id}`, data).then((r) => r.data);
 export const markComplete = (id) =>
   apiClient.post(`/habits/${id}/complete`).then((r) => r.data);
 export const getAnalytics = () =>

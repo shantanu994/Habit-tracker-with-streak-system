@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { addHabit, deleteHabit, getTodayHabits } from "../api/habits";
+import { addHabit, deleteHabit, getTodayHabits, updateHabit } from "../api/habits";
 
 const ICONS = ["💧", "📚", "🏃", "🧘", "💪", "🥗", "😴", "✍️", "🎸", "🌿"];
 const COLORS = [
@@ -22,6 +22,11 @@ export default function AddHabit({ onAdd }) {
   const [msg, setMsg] = useState("");
   const [msgType, setMsgType] = useState(""); // 'success' or 'error'
   const [loading, setLoading] = useState(false);
+  const [editingHabitId, setEditingHabitId] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editIcon, setEditIcon] = useState("⭐");
+  const [editColor, setEditColor] = useState("#6366f1");
+  const [editWeeklyTarget, setEditWeeklyTarget] = useState(5);
 
   const loadHabits = useCallback(async () => {
     try {
@@ -74,6 +79,43 @@ export default function AddHabit({ onAdd }) {
     } catch (err) {
       console.error(err);
       showMessage("❌ Failed to delete habit.", "error");
+    }
+  };
+
+  const beginEdit = (habit) => {
+    setEditingHabitId(habit.id);
+    setEditName(habit.name || "");
+    setEditIcon(habit.icon || "⭐");
+    setEditColor(habit.color || "#6366f1");
+    setEditWeeklyTarget(habit.weekly_target || 7);
+  };
+
+  const cancelEdit = () => {
+    setEditingHabitId(null);
+    setEditName("");
+  };
+
+  const handleUpdate = async () => {
+    if (!editingHabitId) return;
+    if (!editName.trim()) return showMessage("Please enter a habit name!", "error");
+
+    try {
+      setLoading(true);
+      await updateHabit(editingHabitId, {
+        name: editName,
+        icon: editIcon,
+        color: editColor,
+        weekly_target: editWeeklyTarget,
+      });
+      showMessage("✅ Habit updated successfully!", "success");
+      setEditingHabitId(null);
+      setEditName("");
+      await loadHabits();
+    } catch (err) {
+      console.error(err);
+      showMessage("❌ Failed to update habit.", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -174,13 +216,88 @@ export default function AddHabit({ onAdd }) {
               {h.icon} {h.name}
             </span>
             <span className="habit-row-target">🎯 {h.weekly_target || 7}/7</span>
-            <button className="delete-btn" onClick={() => handleDelete(h.id)}>
-              🗑️
-            </button>
+            <div className="habit-row-actions">
+              <button className="edit-btn" onClick={() => beginEdit(h)}>
+                ✏️
+              </button>
+              <button className="delete-btn" onClick={() => handleDelete(h.id)}>
+                🗑️
+              </button>
+            </div>
           </div>
         ))}
         {habits.length === 0 && (
           <p className="empty-hint">No habits yet. Add your first one above.</p>
+        )}
+
+        {editingHabitId && (
+          <div className="edit-panel">
+            <h4>Edit Habit</h4>
+            <div className="form-group">
+              <label>Habit Name</label>
+              <input
+                className="input"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Icon</label>
+              <div className="icon-grid">
+                {ICONS.map((ic) => (
+                  <button
+                    key={`edit-${ic}`}
+                    className={`icon-btn ${editIcon === ic ? "selected" : ""}`}
+                    onClick={() => setEditIcon(ic)}
+                  >
+                    {ic}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Color</label>
+              <div className="color-grid">
+                {COLORS.map((c) => (
+                  <button
+                    key={`edit-${c}`}
+                    className={`color-btn ${editColor === c ? "selected" : ""}`}
+                    style={{ background: c }}
+                    onClick={() => setEditColor(c)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Weekly Target</label>
+              <select
+                className="input"
+                value={editWeeklyTarget}
+                onChange={(e) => setEditWeeklyTarget(Number(e.target.value))}
+              >
+                {[1, 2, 3, 4, 5, 6, 7].map((n) => (
+                  <option key={`edit-target-${n}`} value={n}>
+                    {n} day{n > 1 ? "s" : ""} per week
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="edit-panel-actions">
+              <button className="secondary-btn" onClick={cancelEdit}>Cancel</button>
+              <button
+                className="submit-btn"
+                style={{ background: editColor }}
+                onClick={handleUpdate}
+                disabled={loading}
+              >
+                {loading ? "⏳ Saving..." : "💾 Save Changes"}
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

@@ -74,6 +74,44 @@ def add_habit():
         return jsonify({"error": str(e)}), 500
 
 
+# ── UPDATE an existing habit ─────────────────────────
+@app.route("/api/habits/<int:habit_id>", methods=["PUT"])
+def update_habit(habit_id):
+    try:
+        habit = Habit.query.get_or_404(habit_id)
+        data = request.json or {}
+
+        if "name" in data:
+            name = str(data.get("name", "")).strip()
+            if not name:
+                return jsonify({"error": "Habit name cannot be empty"}), 400
+            habit.name = name
+
+        if "icon" in data:
+            icon = str(data.get("icon", "")).strip()
+            if icon:
+                habit.icon = icon
+
+        if "color" in data:
+            color = str(data.get("color", "")).strip()
+            if color:
+                habit.color = color
+
+        if "weekly_target" in data:
+            try:
+                weekly_target = int(data.get("weekly_target"))
+            except (TypeError, ValueError):
+                return jsonify({"error": "Weekly target must be a number between 1 and 7"}), 400
+            if weekly_target < 1 or weekly_target > 7:
+                return jsonify({"error": "Weekly target must be between 1 and 7"}), 400
+            habit.weekly_target = weekly_target
+
+        db.session.commit()
+        return jsonify(habit.to_dict())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 # ── DELETE a habit ───────────────────────────────────
 @app.route("/api/habits/<int:habit_id>", methods=["DELETE"])
 def delete_habit(habit_id):
