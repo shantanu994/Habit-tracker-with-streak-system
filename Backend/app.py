@@ -1,9 +1,11 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 from sqlalchemy import and_
 from sqlalchemy import text
 from models import db, Habit, HabitLog
 from datetime import date, timedelta
+import csv
+import io
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///habits.db"
@@ -265,6 +267,58 @@ def get_weekly_trend():
         )
 
     return jsonify(result)
+
+
+@app.route("/api/export/csv", methods=["GET"])
+def export_analytics_csv():
+    habits = Habit.query.all()
+    week_start, week_end = get_current_week_bounds()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(
+        [
+            "id",
+            "name",
+            "category",
+            "weekly_target",
+            "weekly_completions",
+            "weekly_progress_pct",
+            "total_completions",
+            "current_streak",
+        ]
+    )
+
+    for h in habits:
+        total = HabitLog.query.filter_by(habit_id=h.id, completed=True).count()
+        weekly = HabitLog.query.filter(
+            HabitLog.habit_id == h.id,
+            HabitLog.completed == True,
+            HabitLog.date >= week_start,
+            HabitLog.date <= week_end,
+        ).count()
+        progress = round((weekly / h.weekly_target) * 100) if h.weekly_target else 0
+        writer.writerow(
+            [
+                h.id,
+                h.name,
+                h.category,
+                h.weekly_target,
+                weekly,
+                progress,
+                total,
+                calculate_streak(h.id),
+            ]
+        )
+
+    csv_data = output.getvalue()
+    output.close()
+
+    return Response(
+        csv_data,
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=habit_analytics.csv"},
+    )
 
 
 # ── ADD demo data for presentation ───────────────────
