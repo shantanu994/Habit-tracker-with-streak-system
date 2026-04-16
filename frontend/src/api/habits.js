@@ -38,6 +38,8 @@ export const updateHabit = (id, data) =>
   apiClient.put(`/habits/${id}`, data).then((r) => r.data);
 export const markComplete = (id) =>
   apiClient.post(`/habits/${id}/complete`).then((r) => r.data);
+export const updateHabitNote = (id, note) =>
+  apiClient.put(`/habits/${id}/note`, { note }).then((r) => r.data);
 export const getAnalytics = () =>
   apiClient.get(`/analytics`).then((r) => r.data);
 export const getHeatmap = (id) =>

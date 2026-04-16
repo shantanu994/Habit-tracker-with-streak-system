@@ -33,6 +33,12 @@ with app.app_context():
         )
         db.session.commit()
 
+    log_columns = db.session.execute(text("PRAGMA table_info(habit_log)")).fetchall()
+    log_column_names = {col[1] for col in log_columns}
+    if "note" not in log_column_names:
+        db.session.execute(text("ALTER TABLE habit_log ADD COLUMN note VARCHAR(280)"))
+        db.session.commit()
+
 
 # ── GET all habits with today's status ──────────────
 @app.route("/api/today", methods=["GET"])
@@ -47,6 +53,7 @@ def get_today():
                 **h.to_dict(),
                 "completed_today": bool(log and log.completed),
                 "streak": calculate_streak(h.id),
+                "today_note": log.note if log else None,
             }
         )
     return jsonify(result)
@@ -173,6 +180,30 @@ def mark_complete(habit_id):
         db.session.commit()
         return jsonify({"status": "checked"})
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/habits/<int:habit_id>/note", methods=["PUT"])
+def update_habit_note(habit_id):
+    try:
+        Habit.query.get_or_404(habit_id)
+        payload = request.json or {}
+        note = str(payload.get("note", "")).strip()
+
+        if len(note) > 280:
+            return jsonify({"error": "Note must be 280 characters or less"}), 400
+
+        today = date.today()
+        log = HabitLog.query.filter_by(habit_id=habit_id, date=today).first()
+        if not log:
+            log = HabitLog(habit_id=habit_id, date=today, completed=False)
+            db.session.add(log)
+
+        log.note = note or None
+        db.session.commit()
+        return jsonify({"status": "saved", "note": log.note or ""})
+    except Exception as e:
+        db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
 

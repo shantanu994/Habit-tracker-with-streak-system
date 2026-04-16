@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { getTodayHabits, markComplete } from "../api/habits";
+import { getTodayHabits, markComplete, updateHabitNote } from "../api/habits";
 import { playCheck, playUncheck, playAllDone } from "../sounds";
 import { getRandomQuote } from "../quotes";
 import confetti from "canvas-confetti";
@@ -13,6 +13,7 @@ export default function Dashboard() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("default");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [noteDrafts, setNoteDrafts] = useState({});
   const prevCompleted = useRef(0);
 
   useEffect(() => {
@@ -22,6 +23,11 @@ export default function Dashboard() {
   const loadHabits = async () => {
     const data = await getTodayHabits();
     setHabits(data);
+    const draftMap = {};
+    data.forEach((habit) => {
+      draftMap[habit.id] = habit.today_note || "";
+    });
+    setNoteDrafts(draftMap);
     setLoading(false);
   };
 
@@ -59,6 +65,16 @@ export default function Dashboard() {
       setQuote(getRandomQuote());
     }
     prevCompleted.current = completedNow;
+  };
+
+  const handleNoteChange = (habitId, value) => {
+    setNoteDrafts((prev) => ({ ...prev, [habitId]: value }));
+  };
+
+  const handleNoteSave = async (habitId) => {
+    const note = noteDrafts[habitId] || "";
+    await updateHabitNote(habitId, note);
+    await loadHabits();
   };
 
   const completed = habits.filter((h) => h.completed_today).length;
@@ -230,7 +246,24 @@ export default function Dashboard() {
                 </span>
               </div>
             </div>
-            <div className="streak">🔥 {habit.streak}</div>
+            <div className="habit-right">
+              <div className="streak">🔥 {habit.streak}</div>
+              <div className="habit-note-box" onClick={(e) => e.stopPropagation()}>
+                <input
+                  className="habit-note-input"
+                  maxLength={280}
+                  value={noteDrafts[habit.id] || ""}
+                  onChange={(e) => handleNoteChange(habit.id, e.target.value)}
+                  placeholder="Add quick note"
+                />
+                <button
+                  className="note-save-btn"
+                  onClick={() => handleNoteSave(habit.id)}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
           </div>
         ))}
       </div>

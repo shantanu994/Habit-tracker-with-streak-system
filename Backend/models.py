@@ -31,3 +31,4 @@ class HabitLog(db.Model):
     habit_id = db.Column(db.Integer, db.ForeignKey('habit.id'), nullable=False)
     date = db.Column(db.Date, default=date.today)
     completed = db.Column(db.Boolean, default=False)
+    note = db.Column(db.String(280), nullable=True)
