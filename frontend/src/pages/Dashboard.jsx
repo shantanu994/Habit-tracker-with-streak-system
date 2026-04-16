@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [allDoneShown, setAllDoneShown] = useState(false);
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("default");
+  const [categoryFilter, setCategoryFilter] = useState("all");
   const prevCompleted = useRef(0);
 
   useEffect(() => {
@@ -72,12 +73,20 @@ export default function Dashboard() {
     day: "numeric",
   });
   const allDone = habits.length > 0 && completed === habits.length;
+  const categories = [
+    "all",
+    ...new Set(habits.map((h) => h.category || "General")),
+  ];
 
   const displayedHabits = [...habits]
     .filter((habit) => {
       if (statusFilter === "completed") return habit.completed_today;
       if (statusFilter === "pending") return !habit.completed_today;
       return true;
+    })
+    .filter((habit) => {
+      if (categoryFilter === "all") return true;
+      return (habit.category || "General") === categoryFilter;
     })
     .sort((a, b) => {
       if (sortBy === "name") return a.name.localeCompare(b.name);
@@ -162,6 +171,21 @@ export default function Dashboard() {
             <option value="name">Name A-Z</option>
           </select>
         </div>
+
+        <div className="control-group">
+          <label>Category</label>
+          <select
+            className="input control-input"
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+          >
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category === "all" ? "All categories" : category}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Habits List */}
@@ -198,6 +222,9 @@ export default function Dashboard() {
               <span className="habit-icon">{habit.icon}</span>
               <div className="habit-text">
                 <span className="habit-name">{habit.name}</span>
+                <span className="habit-category-badge">
+                  🏷️ {habit.category || "General"}
+                </span>
                 <span className="habit-reminder">
                   ⏰ {habit.reminder_time || "No reminder"}
                 </span>

@@ -27,6 +27,11 @@ with app.app_context():
             text("ALTER TABLE habit ADD COLUMN reminder_time VARCHAR(5)")
         )
         db.session.commit()
+    if "category" not in column_names:
+        db.session.execute(
+            text("ALTER TABLE habit ADD COLUMN category VARCHAR(40) NOT NULL DEFAULT 'General'")
+        )
+        db.session.commit()
 
 
 # ── GET all habits with today's status ──────────────
@@ -70,10 +75,15 @@ def add_habit():
         if data.get("reminder_time") is not None and reminder_time is None:
             return jsonify({"error": "Reminder time must be in HH:MM format"}), 400
 
+        category = normalize_category(data.get("category"))
+        if category is None:
+            return jsonify({"error": "Category must be 1 to 40 characters"}), 400
+
         habit = Habit(
             name=data["name"].strip(),
             icon=data.get("icon", "⭐"),
             color=data.get("color", "#6366f1"),
+            category=category,
             weekly_target=weekly_target,
             reminder_time=reminder_time,
         )
@@ -106,6 +116,12 @@ def update_habit(habit_id):
             color = str(data.get("color", "")).strip()
             if color:
                 habit.color = color
+
+        if "category" in data:
+            category = normalize_category(data.get("category"))
+            if category is None:
+                return jsonify({"error": "Category must be 1 to 40 characters"}), 400
+            habit.category = category
 
         if "weekly_target" in data:
             try:
@@ -229,6 +245,7 @@ def seed_demo_data():
                 "name": "Morning Walk",
                 "icon": "🚶",
                 "color": "#10b981",
+                "category": "Fitness",
                 "weekly_target": 5,
                 "reminder_time": "06:30",
             },
@@ -236,6 +253,7 @@ def seed_demo_data():
                 "name": "Read 20 Pages",
                 "icon": "📚",
                 "color": "#3b82f6",
+                "category": "Learning",
                 "weekly_target": 6,
                 "reminder_time": "21:00",
             },
@@ -243,6 +261,7 @@ def seed_demo_data():
                 "name": "Drink Water",
                 "icon": "💧",
                 "color": "#14b8a6",
+                "category": "Health",
                 "weekly_target": 7,
                 "reminder_time": "10:00",
             },
@@ -250,6 +269,7 @@ def seed_demo_data():
                 "name": "Workout",
                 "icon": "💪",
                 "color": "#f59e0b",
+                "category": "Fitness",
                 "weekly_target": 4,
                 "reminder_time": "18:30",
             },
@@ -257,6 +277,7 @@ def seed_demo_data():
                 "name": "Meditation",
                 "icon": "🧘",
                 "color": "#8b5cf6",
+                "category": "Mindfulness",
                 "weekly_target": 5,
                 "reminder_time": "07:00",
             },
@@ -396,6 +417,18 @@ def normalize_reminder_time(value):
         return None
 
     return f"{hour_i:02d}:{minute_i:02d}"
+
+
+def normalize_category(value):
+    if value is None:
+        return "General"
+
+    category = str(value).strip()
+    if not category:
+        return "General"
+    if len(category) > 40:
+        return None
+    return category
 
 
 if __name__ == "__main__":

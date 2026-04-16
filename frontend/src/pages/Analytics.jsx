@@ -24,6 +24,7 @@ export default function Analytics() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("completions");
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
   useEffect(() => {
     loadAnalytics();
@@ -81,11 +82,19 @@ export default function Analytics() {
       if (statusFilter === "off-track") return !h.weekly_on_track;
       return true;
     })
+    .filter((h) => {
+      if (categoryFilter === "all") return true;
+      return (h.category || "General") === categoryFilter;
+    })
     .sort((a, b) => {
       if (sortBy === "name") return a.name.localeCompare(b.name);
       if (sortBy === "streak") return b.current_streak - a.current_streak;
       return b.total_completions - a.total_completions;
     });
+  const categories = [
+    "all",
+    ...new Set(analytics.map((h) => h.category || "General")),
+  ];
 
   const barData = visibleAnalytics.map((h) => ({
     name: h.icon + " " + h.name,
@@ -134,6 +143,21 @@ export default function Analytics() {
             <option value="name">Name A-Z</option>
           </select>
         </div>
+
+        <div className="control-group">
+          <label>Category</label>
+          <select
+            className="input control-input"
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+          >
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category === "all" ? "All categories" : category}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="stat-cards-grid">
@@ -145,6 +169,7 @@ export default function Analytics() {
           >
             <div className="s-icon">{h.icon}</div>
             <div className="s-name">{h.name}</div>
+            <div className="s-category">🏷️ {h.category || "General"}</div>
             <div className="s-streak">🔥 {h.current_streak} day streak</div>
             <div className="s-total">
               {h.total_completions} total completions

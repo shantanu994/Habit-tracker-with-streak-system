@@ -18,6 +18,15 @@ const COLORS = [
   "#8b5cf6",
   "#14b8a6",
 ];
+const CATEGORIES = [
+  "General",
+  "Health",
+  "Fitness",
+  "Learning",
+  "Productivity",
+  "Mindfulness",
+  "Personal",
+];
 
 export default function AddHabit({ onAdd }) {
   const [name, setName] = useState("");
@@ -25,6 +34,7 @@ export default function AddHabit({ onAdd }) {
   const [color, setColor] = useState("#6366f1");
   const [weeklyTarget, setWeeklyTarget] = useState(5);
   const [reminderTime, setReminderTime] = useState("");
+  const [category, setCategory] = useState("General");
   const [habits, setHabits] = useState([]);
   const [msg, setMsg] = useState("");
   const [msgType, setMsgType] = useState(""); // 'success' or 'error'
@@ -35,6 +45,7 @@ export default function AddHabit({ onAdd }) {
   const [editColor, setEditColor] = useState("#6366f1");
   const [editWeeklyTarget, setEditWeeklyTarget] = useState(5);
   const [editReminderTime, setEditReminderTime] = useState("");
+  const [editCategory, setEditCategory] = useState("General");
 
   const loadHabits = useCallback(async () => {
     try {
@@ -67,6 +78,7 @@ export default function AddHabit({ onAdd }) {
         name,
         icon,
         color,
+        category,
         weekly_target: weeklyTarget,
         reminder_time: reminderTime || null,
       });
@@ -74,6 +86,7 @@ export default function AddHabit({ onAdd }) {
       setName("");
       setWeeklyTarget(5);
       setReminderTime("");
+      setCategory("General");
       await loadHabits();
       setTimeout(() => {
         onAdd();
@@ -121,6 +134,7 @@ export default function AddHabit({ onAdd }) {
     setEditName(habit.name || "");
     setEditIcon(habit.icon || "⭐");
     setEditColor(habit.color || "#6366f1");
+    setEditCategory(habit.category || "General");
     setEditWeeklyTarget(habit.weekly_target || 7);
     setEditReminderTime(habit.reminder_time || "");
   };
@@ -141,6 +155,7 @@ export default function AddHabit({ onAdd }) {
         name: editName,
         icon: editIcon,
         color: editColor,
+        category: editCategory,
         weekly_target: editWeeklyTarget,
         reminder_time: editReminderTime || null,
       });
@@ -226,6 +241,21 @@ export default function AddHabit({ onAdd }) {
         </div>
 
         <div className="form-group">
+          <label>Category</label>
+          <select
+            className="input"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
           <label>Reminder Time (Optional)</label>
           <input
             className="input"
@@ -240,6 +270,7 @@ export default function AddHabit({ onAdd }) {
           <div>
             <p className="preview-label">Preview</p>
             <strong>{name.trim() || "Your new habit"}</strong>
+            <p className="preview-target">Category: {category}</p>
             <p className="preview-target">Target: {weeklyTarget}/7 days</p>
             <p className="preview-target">
               Reminder: {reminderTime ? reminderTime : "Not set"}
@@ -274,6 +305,7 @@ export default function AddHabit({ onAdd }) {
             <span className="habit-row-main">
               {h.icon} {h.name}
             </span>
+            <span className="habit-row-category">🏷️ {h.category || "General"}</span>
             <span className="habit-row-target">🎯 {h.weekly_target || 7}/7</span>
             <span className="habit-row-time">⏰ {h.reminder_time || "--:--"}</span>
             <div className="habit-row-actions">
@@ -341,6 +373,21 @@ export default function AddHabit({ onAdd }) {
                 {[1, 2, 3, 4, 5, 6, 7].map((n) => (
                   <option key={`edit-target-${n}`} value={n}>
                     {n} day{n > 1 ? "s" : ""} per week
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Category</label>
+              <select
+                className="input"
+                value={editCategory}
+                onChange={(e) => setEditCategory(e.target.value)}
+              >
+                {CATEGORIES.map((c) => (
+                  <option key={`edit-category-${c}`} value={c}>
+                    {c}
                   </option>
                 ))}
               </select>

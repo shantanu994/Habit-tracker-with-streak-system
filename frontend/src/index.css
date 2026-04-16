@@ -525,6 +525,17 @@ body {
   margin-top: 2px;
 }
 
+.habit-category-badge {
+  width: fit-content;
+  margin-top: 5px;
+  font-size: 11px;
+  color: #d6ebff;
+  background: rgba(79, 124, 255, 0.2);
+  border: 1px solid rgba(146, 184, 255, 0.38);
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
 .streak-badge {
   font-family: "JetBrains Mono", monospace;
   font-size: 13px;
@@ -664,6 +675,17 @@ body {
   font-weight: 600;
   font-size: 13px;
 }
+
+.analytics-stat .s-category {
+  font-size: 11px;
+  width: fit-content;
+  color: #d6ebff;
+  background: rgba(79, 124, 255, 0.18);
+  border: 1px solid rgba(146, 184, 255, 0.3);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
 .analytics-stat .s-streak {
   font-size: 12px;
   color: #fbbf24;
@@ -920,6 +942,15 @@ body {
   color: var(--muted);
   font-size: 11px;
   text-transform: uppercase;
+
+.habit-row-category {
+  font-size: 11px;
+  color: #d7e8ff;
+  background: rgba(79, 124, 255, 0.18);
+  border: 1px solid rgba(146, 184, 255, 0.3);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
   letter-spacing: 0.06em;
 }
 
