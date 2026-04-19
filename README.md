@@ -129,6 +129,12 @@ python app.py
 
 Backend runs at: `http://localhost:5000`
 
+Quick backend checks:
+
+- `GET /` should return backend status JSON
+- `GET /api/health` should return `{ "status": "ok" }`
+- `GET /api/today` should return current habits list
+
 ## 2. Frontend Setup
 
 ```bash
@@ -138,6 +144,27 @@ npm start
 ```
 
 Frontend runs at: `http://localhost:3000`
+
+## 3. Seed Sample Data (Previous 1 Month)
+
+You can seed demo data directly from the app:
+
+- Open **Add Habit** page
+- Click **Load 1-Month Demo Data**
+- This creates/syncs demo habits and completion logs for the last 30 days
+
+Or via API:
+
+```http
+POST /api/demo/seed
+Content-Type: application/json
+
+{
+  "days": 30
+}
+```
+
+Then open Dashboard and Analytics to see charts and heatmap populated.
 
 ## API Endpoints
 
@@ -176,7 +203,8 @@ Frontend runs at: `http://localhost:3000`
 - `GET /api/health`
   - Health check endpoint
 - `POST /api/demo/seed`
-  - Adds/syncs demo habits and historical logs
+  - Adds/syncs demo habits and historical logs (defaults to 30 days)
+  - Optional body: `{ "days": 30 }` (range: 1 to 365)
 
 ## Data Model
 
@@ -228,6 +256,7 @@ npm test
 - If frontend cannot reach backend, verify backend is running on port 5000
 - If backend starts but API fails, verify `.env` values and MySQL user permissions
 - Confirm database and tables exist in MySQL (`habit_flow`, `habit`, `habit_log`)
+- If demo seed fails, verify `POST /api/demo/seed` body uses `days` between 1 and 365
 - If port is busy, change app run port in backend and update API base URL in frontend
 
 ## License

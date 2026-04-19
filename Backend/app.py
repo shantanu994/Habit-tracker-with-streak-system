@@ -88,7 +88,10 @@ def add_habit():
         try:
             weekly_target = int(weekly_target)
         except (TypeError, ValueError):
-            return jsonify({"error": "Weekly target must be a number between 1 and 7"}), 400
+            return (
+                jsonify({"error": "Weekly target must be a number between 1 and 7"}),
+                400,
+            )
 
         if weekly_target < 1 or weekly_target > 7:
             return jsonify({"error": "Weekly target must be between 1 and 7"}), 400
@@ -149,14 +152,23 @@ def update_habit(habit_id):
             try:
                 weekly_target = int(data.get("weekly_target"))
             except (TypeError, ValueError):
-                return jsonify({"error": "Weekly target must be a number between 1 and 7"}), 400
+                return (
+                    jsonify(
+                        {"error": "Weekly target must be a number between 1 and 7"}
+                    ),
+                    400,
+                )
             if weekly_target < 1 or weekly_target > 7:
                 return jsonify({"error": "Weekly target must be between 1 and 7"}), 400
             habit.weekly_target = weekly_target
 
         if "reminder_time" in data:
             reminder_time = normalize_reminder_time(data.get("reminder_time"))
-            if data.get("reminder_time") is not None and data.get("reminder_time") != "" and reminder_time is None:
+            if (
+                data.get("reminder_time") is not None
+                and data.get("reminder_time") != ""
+                and reminder_time is None
+            ):
                 return jsonify({"error": "Reminder time must be in HH:MM format"}), 400
             habit.reminder_time = reminder_time
 
@@ -236,7 +248,9 @@ def get_analytics():
             HabitLog.date >= week_start,
             HabitLog.date <= week_end,
         ).count()
-        weekly_progress_pct = round((weekly / h.weekly_target) * 100) if h.weekly_target else 0
+        weekly_progress_pct = (
+            round((weekly / h.weekly_target) * 100) if h.weekly_target else 0
+        )
         result.append(
             {
                 **h.to_dict(),
@@ -266,7 +280,9 @@ def get_weekly_trend():
             HabitLog.date >= week_start,
             HabitLog.date <= week_end,
         ).count()
-        completion_rate = round((completed / target_per_week) * 100) if target_per_week else 0
+        completion_rate = (
+            round((completed / target_per_week) * 100) if target_per_week else 0
+        )
 
         result.append(
             {
@@ -338,6 +354,15 @@ def export_analytics_csv():
 @app.route("/api/demo/seed", methods=["POST"])
 def seed_demo_data():
     try:
+        payload = request.json or {}
+        try:
+            days = int(payload.get("days", 30))
+        except (TypeError, ValueError):
+            return jsonify({"error": "days must be a number"}), 400
+
+        if days < 1 or days > 365:
+            return jsonify({"error": "days must be between 1 and 365"}), 400
+
         demo_habits = [
             {
                 "name": "Morning Walk",
@@ -407,7 +432,7 @@ def seed_demo_data():
         today = date.today()
         for idx, habit in enumerate(synced_habits):
             pattern = weekday_patterns[idx % len(weekday_patterns)]
-            for days_ago in range(0, 35):
+            for days_ago in range(0, days):
                 log_date = today - timedelta(days=days_ago)
                 if log_date.weekday() in pattern and (days_ago + idx) % 6 != 0:
                     existing_log = HabitLog.query.filter_by(
@@ -416,13 +441,16 @@ def seed_demo_data():
                         completed=True,
                     ).first()
                     if not existing_log:
-                        db.session.add(HabitLog(habit_id=habit.id, date=log_date, completed=True))
+                        db.session.add(
+                            HabitLog(habit_id=habit.id, date=log_date, completed=True)
+                        )
                         created_log_count += 1
 
         db.session.commit()
         return jsonify(
             {
                 "message": "Demo data synced",
+                "seeded_days": days,
                 "created_habits": created_habit_count,
                 "created_logs": created_log_count,
             }
@@ -448,9 +476,7 @@ def get_year_heatmap():
 
     # Get all completed logs in the past year
     logs = HabitLog.query.filter(
-        HabitLog.completed == True,
-        HabitLog.date >= year_ago,
-        HabitLog.date <= today
+        HabitLog.completed == True, HabitLog.date >= year_ago, HabitLog.date <= today
     ).all()
 
     # Aggregate by date

@@ -113,11 +113,12 @@ export default function AddHabit({ onAdd }) {
   const handleSeedDemo = async () => {
     try {
       setLoading(true);
-      const res = await seedDemoData();
+      const res = await seedDemoData(30);
+      const seededDays = res.seeded_days || 30;
       const createdHabits = res.created_habits || 0;
       const createdLogs = res.created_logs || 0;
       showMessage(
-        `✅ Demo synced: +${createdHabits} habits, +${createdLogs} logs`,
+        `✅ Last ${seededDays} days synced: +${createdHabits} habits, +${createdLogs} logs`,
         "success",
       );
       await loadHabits();
@@ -147,7 +148,8 @@ export default function AddHabit({ onAdd }) {
 
   const handleUpdate = async () => {
     if (!editingHabitId) return;
-    if (!editName.trim()) return showMessage("Please enter a habit name!", "error");
+    if (!editName.trim())
+      return showMessage("Please enter a habit name!", "error");
 
     try {
       setLoading(true);
@@ -297,7 +299,7 @@ export default function AddHabit({ onAdd }) {
             onClick={handleSeedDemo}
             disabled={loading}
           >
-            🧪 Load Demo Data
+            🧪 Load 1-Month Demo Data
           </button>
         </div>
         {habits.map((h) => (
@@ -305,9 +307,15 @@ export default function AddHabit({ onAdd }) {
             <span className="habit-row-main">
               {h.icon} {h.name}
             </span>
-            <span className="habit-row-category">🏷️ {h.category || "General"}</span>
-            <span className="habit-row-target">🎯 {h.weekly_target || 7}/7</span>
-            <span className="habit-row-time">⏰ {h.reminder_time || "--:--"}</span>
+            <span className="habit-row-category">
+              🏷️ {h.category || "General"}
+            </span>
+            <span className="habit-row-target">
+              🎯 {h.weekly_target || 7}/7
+            </span>
+            <span className="habit-row-time">
+              ⏰ {h.reminder_time || "--:--"}
+            </span>
             <div className="habit-row-actions">
               <button className="edit-btn" onClick={() => beginEdit(h)}>
                 ✏️
@@ -404,7 +412,9 @@ export default function AddHabit({ onAdd }) {
             </div>
 
             <div className="edit-panel-actions">
-              <button className="secondary-btn" onClick={cancelEdit}>Cancel</button>
+              <button className="secondary-btn" onClick={cancelEdit}>
+                Cancel
+              </button>
               <button
                 className="submit-btn"
                 style={{ background: editColor }}
