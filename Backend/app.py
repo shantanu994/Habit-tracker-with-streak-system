@@ -1,14 +1,36 @@
 from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 from sqlalchemy import and_
-from sqlalchemy import text
 from models import db, Habit, HabitLog
 from datetime import date, timedelta
 import csv
 import io
+import os
+from urllib.parse import quote_plus
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///habits.db"
+
+
+def build_database_uri():
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        return database_url
+
+    db_user = os.getenv("MYSQL_USER", "root")
+    db_password = quote_plus(os.getenv("MYSQL_PASSWORD", ""))
+    db_host = os.getenv("MYSQL_HOST", "localhost")
+    db_port = os.getenv("MYSQL_PORT", "3306")
+    db_name = os.getenv("MYSQL_DB", "habit_flow")
+
+    if db_password:
+        return f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?charset=utf8mb4"
+    return f"mysql+pymysql://{db_user}@{db_host}:{db_port}/{db_name}?charset=utf8mb4"
+
+
+app.config["SQLALCHEMY_DATABASE_URI"] = build_database_uri()
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 CORS(app)
@@ -16,30 +38,21 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-    ensure_columns_sql = "PRAGMA table_info(habit)"
-    columns = db.session.execute(text(ensure_columns_sql)).fetchall()
-    column_names = {col[1] for col in columns}
-    if "weekly_target" not in column_names:
-        db.session.execute(
-            text("ALTER TABLE habit ADD COLUMN weekly_target INTEGER NOT NULL DEFAULT 7")
-        )
-        db.session.commit()
-    if "reminder_time" not in column_names:
-        db.session.execute(
-            text("ALTER TABLE habit ADD COLUMN reminder_time VARCHAR(5)")
-        )
-        db.session.commit()
-    if "category" not in column_names:
-        db.session.execute(
-            text("ALTER TABLE habit ADD COLUMN category VARCHAR(40) NOT NULL DEFAULT 'General'")
-        )
-        db.session.commit()
 
-    log_columns = db.session.execute(text("PRAGMA table_info(habit_log)")).fetchall()
-    log_column_names = {col[1] for col in log_columns}
-    if "note" not in log_column_names:
-        db.session.execute(text("ALTER TABLE habit_log ADD COLUMN note VARCHAR(280)"))
-        db.session.commit()
+
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify(
+        {
+            "message": "HabitFlow backend is running",
+            "endpoints": ["/api/today", "/api/analytics", "/api/health"],
+        }
+    )
+
+
+@app.route("/api/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "ok"})
 
 
 # ── GET all habits with today's status ──────────────
