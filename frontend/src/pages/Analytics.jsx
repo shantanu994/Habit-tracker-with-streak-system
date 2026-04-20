@@ -169,7 +169,9 @@ export default function Analytics() {
           >
             <div className="s-icon">{h.icon}</div>
             <div className="s-name">{h.name}</div>
-            <div className="s-category">Category: {h.category || "General"}</div>
+            <div className="s-category">
+              Category: {h.category || "General"}
+            </div>
             <div className="s-streak">{h.current_streak} day streak</div>
             <div className="s-total">
               {h.total_completions} total completions
@@ -177,7 +179,9 @@ export default function Analytics() {
             <div className="s-weekly">
               {h.weekly_completions}/{h.weekly_target} this week
             </div>
-            <div className="s-weekly-meta">{h.weekly_progress_pct}% of target</div>
+            <div className="s-weekly-meta">
+              {h.weekly_progress_pct}% of target
+            </div>
           </div>
         ))}
       </div>
@@ -190,12 +194,20 @@ export default function Analytics() {
         <h3>Weekly Momentum Trend</h3>
         <ResponsiveContainer width="100%" height={250}>
           <LineChart data={weeklyTrend}>
-            <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.12)" />
+            <CartesianGrid
+              strokeDasharray="4 4"
+              stroke="rgba(255,255,255,0.12)"
+            />
             <XAxis dataKey="week_label" tick={{ fontSize: 11 }} />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="completed" name="Completed" fill="#4f7cff" radius={[6, 6, 0, 0]} />
+            <Bar
+              dataKey="completed"
+              name="Completed"
+              fill="#4f7cff"
+              radius={[6, 6, 0, 0]}
+            />
             <Line
               type="monotone"
               dataKey="target"

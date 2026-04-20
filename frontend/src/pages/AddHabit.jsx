@@ -93,7 +93,7 @@ export default function AddHabit({ onAdd }) {
       }, 1000);
     } catch (err) {
       console.error(err);
-      showMessage("❌ Failed to add habit. Please try again.", "error");
+      showMessage("Failed to add habit. Please try again.", "error");
     } finally {
       setLoading(false);
     }
@@ -310,12 +310,8 @@ export default function AddHabit({ onAdd }) {
             <span className="habit-row-category">
               {h.category || "General"}
             </span>
-            <span className="habit-row-target">
-              {h.weekly_target || 7}/7
-            </span>
-            <span className="habit-row-time">
-              {h.reminder_time || "--:--"}
-            </span>
+            <span className="habit-row-target">{h.weekly_target || 7}/7</span>
+            <span className="habit-row-time">{h.reminder_time || "--:--"}</span>
             <div className="habit-row-actions">
               <button className="edit-btn" onClick={() => beginEdit(h)}>
                 Edit

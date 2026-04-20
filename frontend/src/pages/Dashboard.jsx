@@ -172,9 +172,7 @@ export default function Dashboard() {
       {/* Habits List */}
       <div className="habits-list">
         {habits.length === 0 && (
-          <div className="empty">
-            No habits yet! Click Add Habit to start.
-          </div>
+          <div className="empty">No habits yet! Click Add Habit to start.</div>
         )}
         {habits.length > 0 && displayedHabits.length === 0 && (
           <div className="empty">No habits match the selected filter.</div>

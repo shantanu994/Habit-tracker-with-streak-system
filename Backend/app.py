@@ -503,8 +503,8 @@ def normalize_category(value):
 
 if __name__ == "__main__":
     print("\n" + "=" * 50)
-    print("🔥 HabitFlow Backend Starting...")
-    print("📍 Backend running on: http://localhost:5000")
-    print("✅ CORS enabled for frontend")
+    print("HabitFlow Backend Starting...")
+    print("Backend running on: http://localhost:5000")
+    print("CORS enabled for frontend")
     print("=" * 50 + "\n")
     app.run(debug=True, port=5000)

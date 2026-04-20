@@ -824,20 +824,44 @@ select.control-input option {
 
 .analytics-page .stat-cards-grid .analytics-stat:nth-child(3n + 1) {
   background:
-    radial-gradient(circle at 12% 10%, rgba(79, 124, 255, 0.35), transparent 50%),
-    linear-gradient(132deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03));
+    radial-gradient(
+      circle at 12% 10%,
+      rgba(79, 124, 255, 0.35),
+      transparent 50%
+    ),
+    linear-gradient(
+      132deg,
+      rgba(255, 255, 255, 0.11),
+      rgba(255, 255, 255, 0.03)
+    );
 }
 
 .analytics-page .stat-cards-grid .analytics-stat:nth-child(3n + 2) {
   background:
-    radial-gradient(circle at 12% 10%, rgba(244, 108, 138, 0.28), transparent 50%),
-    linear-gradient(132deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03));
+    radial-gradient(
+      circle at 12% 10%,
+      rgba(244, 108, 138, 0.28),
+      transparent 50%
+    ),
+    linear-gradient(
+      132deg,
+      rgba(255, 255, 255, 0.11),
+      rgba(255, 255, 255, 0.03)
+    );
 }
 
 .analytics-page .stat-cards-grid .analytics-stat:nth-child(3n) {
   background:
-    radial-gradient(circle at 12% 10%, rgba(36, 194, 255, 0.28), transparent 50%),
-    linear-gradient(132deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03));
+    radial-gradient(
+      circle at 12% 10%,
+      rgba(36, 194, 255, 0.28),
+      transparent 50%
+    ),
+    linear-gradient(
+      132deg,
+      rgba(255, 255, 255, 0.11),
+      rgba(255, 255, 255, 0.03)
+    );
 }
 
 .analytics-page .control-row {
@@ -865,20 +889,36 @@ select.control-input option {
 
 .analytics-page .analytics-chart-card.trend-chart {
   background:
-    radial-gradient(circle at 10% 0%, rgba(79, 124, 255, 0.35), transparent 48%),
-    linear-gradient(130deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+    radial-gradient(
+      circle at 10% 0%,
+      rgba(79, 124, 255, 0.35),
+      transparent 48%
+    ),
+    linear-gradient(
+      130deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.03)
+    );
 }
 
 .analytics-page .analytics-chart-card.totals-chart {
   background:
     radial-gradient(circle at 8% 0%, rgba(29, 207, 143, 0.28), transparent 48%),
-    linear-gradient(130deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+    linear-gradient(
+      130deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.03)
+    );
 }
 
 .analytics-page .analytics-chart-card.dist-chart {
   background:
     radial-gradient(circle at 8% 0%, rgba(244, 108, 138, 0.3), transparent 48%),
-    linear-gradient(130deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+    linear-gradient(
+      130deg,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.03)
+    );
 }
 
 .chart-card {
@@ -1118,14 +1158,14 @@ select.control-input option {
   font-size: 11px;
   text-transform: uppercase;
 
-.habit-row-category {
-  font-size: 11px;
-  color: #d7e8ff;
-  background: rgba(79, 124, 255, 0.18);
-  border: 1px solid rgba(146, 184, 255, 0.3);
-  border-radius: 999px;
-  padding: 3px 10px;
-}
+  .habit-row-category {
+    font-size: 11px;
+    color: #d7e8ff;
+    background: rgba(79, 124, 255, 0.18);
+    border: 1px solid rgba(146, 184, 255, 0.3);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
   letter-spacing: 0.06em;
 }
 

@@ -93,9 +93,7 @@ export default function ContributionHeatmap() {
   };
 
   if (loading) {
-    return (
-      <div className="heatmap-container loading">⏳ Loading heatmap...</div>
-    );
+    return <div className="heatmap-container loading">Loading heatmap...</div>;
   }
 
   if (error) {
@@ -136,10 +134,10 @@ export default function ContributionHeatmap() {
   return (
     <div className="heatmap-container">
       <div className="heatmap-header">
-        <h2>📈 Contribution Heatmap</h2>
+        <h2>Contribution Heatmap</h2>
         <p>Daily habit completions over the past year</p>
         <button onClick={loadHeatmapData} className="refresh-btn">
-          🔄 Refresh
+          Refresh
         </button>
       </div>
 

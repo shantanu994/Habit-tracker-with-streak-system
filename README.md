@@ -3,9 +3,11 @@
 HabitFlow is a full-stack habit tracking web app built with Flask + React.
 It helps you stay consistent through streaks, analytics, visual feedback, and simple daily workflow tools.
 
+HabitFlow is designed for a clean demo flow: seed realistic history, open dashboard, and immediately show weekly trends and heatmap insights.
+
 ## What You Get
 
-- Daily habit dashboard with one-click complete/uncomplete toggle
+- Daily habit dashboard with one-click complete/incomplete toggle
 - Habit streak tracking and daily progress summary
 - Habit categories with category-based filtering
 - Status and category filters on dashboard
@@ -145,7 +147,41 @@ npm start
 
 Frontend runs at: `http://localhost:3000`
 
-## 3. Seed Sample Data (Previous 1 Month)
+Optional frontend API configuration:
+
+Create `frontend/.env` and set:
+
+```env
+REACT_APP_API_BASE_URL=http://localhost:5000/api
+```
+
+This is useful when your backend is hosted on a different domain or port.
+
+## 3. Quick Demo Flow (External Showcase)
+
+Use this sequence when showing the project:
+
+1. Start backend and frontend.
+
+- Backend: `python app.py`
+- Frontend: `npm start`
+
+2. Open Add Habit page and click **Load 1-Month Demo Data**.
+3. Open Dashboard and show:
+
+- completion toggles
+- status/category filters
+- streak and progress cards
+
+4. Open Analytics and show:
+
+- status/sort/category filters
+- weekly momentum trend chart
+- total completions bar chart
+- distribution pie chart
+- yearly contribution heatmap
+
+## 4. Seed Sample Data (Previous 1 Month)
 
 You can seed demo data directly from the app:
 
@@ -177,7 +213,7 @@ Then open Dashboard and Analytics to see charts and heatmap populated.
 - `PUT /api/habits/<habit_id>`
   - Update habit details
 - `DELETE /api/habits/<habit_id>`
-  - Delete habit
+  - Delete habit.
 - `POST /api/habits/<habit_id>/complete`
   - Toggle today's completion
 - `PUT /api/habits/<habit_id>/note`
