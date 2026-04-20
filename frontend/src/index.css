@@ -677,6 +677,69 @@ body {
   padding: 10px 12px;
 }
 
+select.input,
+select.control-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  padding-right: 44px;
+  border-color: rgba(188, 214, 255, 0.34);
+  background:
+    linear-gradient(45deg, transparent 50%, rgba(206, 224, 255, 0.92) 50%),
+    linear-gradient(135deg, rgba(206, 224, 255, 0.92) 50%, transparent 50%),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.02)
+    );
+  background-position:
+    calc(100% - 18px) calc(50% - 2px),
+    calc(100% - 12px) calc(50% - 2px),
+    0 0;
+  background-size:
+    6px 6px,
+    6px 6px,
+    100% 100%;
+  background-repeat: no-repeat;
+}
+
+select.input:hover,
+select.control-input:hover {
+  border-color: rgba(211, 228, 255, 0.5);
+  background:
+    linear-gradient(45deg, transparent 50%, rgba(224, 236, 255, 0.98) 50%),
+    linear-gradient(135deg, rgba(224, 236, 255, 0.98) 50%, transparent 50%),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.03)
+    );
+  background-position:
+    calc(100% - 18px) calc(50% - 2px),
+    calc(100% - 12px) calc(50% - 2px),
+    0 0;
+  background-size:
+    6px 6px,
+    6px 6px,
+    100% 100%;
+  background-repeat: no-repeat;
+}
+
+select.input:focus,
+select.control-input:focus {
+  border-color: rgba(110, 161, 255, 0.95);
+  box-shadow:
+    0 0 0 3px rgba(79, 124, 255, 0.22),
+    0 10px 22px rgba(8, 20, 49, 0.35);
+}
+
+select.input option,
+select.control-input option {
+  color: var(--text);
+  background: #16264a;
+}
+
 .loading {
   text-align: center;
   padding: 60px;

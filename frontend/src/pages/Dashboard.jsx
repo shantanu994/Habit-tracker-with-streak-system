@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { getTodayHabits, markComplete, updateHabitNote } from "../api/habits";
+import { getTodayHabits, markComplete } from "../api/habits";
 import { playCheck, playUncheck, playAllDone } from "../sounds";
 import { getRandomQuote } from "../quotes";
 import confetti from "canvas-confetti";
@@ -11,9 +11,7 @@ export default function Dashboard() {
   const [animatingId, setAnimatingId] = useState(null);
   const [allDoneShown, setAllDoneShown] = useState(false);
   const [statusFilter, setStatusFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("default");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [noteDrafts, setNoteDrafts] = useState({});
   const prevCompleted = useRef(0);
 
   useEffect(() => {
@@ -23,11 +21,6 @@ export default function Dashboard() {
   const loadHabits = async () => {
     const data = await getTodayHabits();
     setHabits(data);
-    const draftMap = {};
-    data.forEach((habit) => {
-      draftMap[habit.id] = habit.today_note || "";
-    });
-    setNoteDrafts(draftMap);
     setLoading(false);
   };
 
@@ -67,16 +60,6 @@ export default function Dashboard() {
     prevCompleted.current = completedNow;
   };
 
-  const handleNoteChange = (habitId, value) => {
-    setNoteDrafts((prev) => ({ ...prev, [habitId]: value }));
-  };
-
-  const handleNoteSave = async (habitId) => {
-    const note = noteDrafts[habitId] || "";
-    await updateHabitNote(habitId, note);
-    await loadHabits();
-  };
-
   const completed = habits.filter((h) => h.completed_today).length;
   const totalStreak = habits.reduce((sum, h) => sum + h.streak, 0);
   const bestStreak = habits.reduce((max, h) => Math.max(max, h.streak), 0);
@@ -103,11 +86,6 @@ export default function Dashboard() {
     .filter((habit) => {
       if (categoryFilter === "all") return true;
       return (habit.category || "General") === categoryFilter;
-    })
-    .sort((a, b) => {
-      if (sortBy === "name") return a.name.localeCompare(b.name);
-      if (sortBy === "streak") return b.streak - a.streak;
-      return 0;
     });
 
   if (loading) return <div className="loading">Loading...</div>;
@@ -176,19 +154,6 @@ export default function Dashboard() {
         </div>
 
         <div className="control-group">
-          <label>Sort</label>
-          <select
-            className="input control-input"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="default">Default</option>
-            <option value="streak">Highest streak</option>
-            <option value="name">Name A-Z</option>
-          </select>
-        </div>
-
-        <div className="control-group">
           <label>Category</label>
           <select
             className="input control-input"
@@ -248,21 +213,6 @@ export default function Dashboard() {
             </div>
             <div className="habit-right">
               <div className="streak">Streak: {habit.streak}</div>
-              <div className="habit-note-box" onClick={(e) => e.stopPropagation()}>
-                <input
-                  className="habit-note-input"
-                  maxLength={280}
-                  value={noteDrafts[habit.id] || ""}
-                  onChange={(e) => handleNoteChange(habit.id, e.target.value)}
-                  placeholder="Add quick note"
-                />
-                <button
-                  className="note-save-btn"
-                  onClick={() => handleNoteSave(habit.id)}
-                >
-                  Save
-                </button>
-              </div>
             </div>
           </div>
         ))}
